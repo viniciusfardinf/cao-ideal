@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { DogApiModule } from './modules/dog-api/dog-api.module';
+import { ConfigModule } from '@nestjs/config'; // <--- IMPORTANTE
 import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { DogApiModule } from './modules/dog-api/dog-api.module';
 
 @Module({
   imports: [
+    // Isso aqui é o que faz a DOG_API_KEY funcionar!
     ConfigModule.forRoot({
-      isGlobal: true,      // Garante que o .env seja visto em todo lugar
-      envFilePath: '.env', // Força o Nest a olhar para o arquivo na raiz
+      isGlobal: true,
     }),
-    DogApiModule,
     RecommendationModule,
+    DogApiModule,
   ],
 })
 export class AppModule {}

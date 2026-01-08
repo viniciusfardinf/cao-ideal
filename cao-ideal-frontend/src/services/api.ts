@@ -1,20 +1,20 @@
-// Link do seu backend na Render
+// ATENÇÃO: Verifique se não há barra "/" sobrando no final da URL
 const PROD_URL = 'https://cao-ideal.onrender.com/api/v1';
 const DEV_URL = 'http://localhost:3000/api/v1';
 
-// O Vite identifica automaticamente se você está no PC (dev) ou na Vercel (prod)
 const API_URL = import.meta.env.PROD ? PROD_URL : DEV_URL;
 
 export const getDogRecommendations = async (params: any) => {
   try {
     const queryString = new URLSearchParams(params).toString();
+    // Aqui montamos a URL final. Ex: https://cao-ideal.onrender.com/api/v1/recommendations
     const response = await fetch(`${API_URL}/recommendations?${queryString}`);
 
     if (!response.ok) throw new Error('Falha ao buscar recomendações');
     return response.json();
   } catch (error) {
     console.error("Erro na API:", error);
-    return []; // Retorna lista vazia para não quebrar o código
+    return [];
   }
 };
 

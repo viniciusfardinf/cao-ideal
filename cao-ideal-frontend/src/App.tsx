@@ -30,10 +30,13 @@ export default function App() {
     setRecommendations([]);
   };
 
-  const handleOptionClick = (questionId: string, value: string) => {
+  const handleOptionClick = () => {
     setTimeout(() => {
-      if (currentQuestion < questions.length - 1) setCurrentQuestion(currentQuestion + 1);
-      else handleFinalSubmit();
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        handleFinalSubmit();
+      }
     }, 300);
   };
 
@@ -80,8 +83,12 @@ export default function App() {
                   <span className="text-cao-medium italic">{questions[currentQuestion].subtitle}</span>
                 </h2>
                 <div className="flex flex-col gap-2 w-full max-w-xs">
-                  {questions[currentQuestion].options.map(option => (
-                    <button key={option.value} onClick={() => handleOptionClick('', '')} className="py-4 px-6 border border-black/10 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                  {questions[currentQuestion].options.map((option: any) => (
+                    <button 
+                      key={option.value} 
+                      onClick={handleOptionClick} 
+                      className="py-4 px-6 border border-black/10 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                    >
                       {option.label}
                     </button>
                   ))}
@@ -92,17 +99,21 @@ export default function App() {
             {step === 'results' && (
               <div className="w-full space-y-6 animate-in fade-in">
                 <h2 className="text-5xl font-black uppercase italic tracking-tighter">Seu Top 3</h2>
-                <div className="space-y-4 w-full">
-                  {recommendations.slice(0, 3).map((dog, i) => (
-                    <div key={i} className="flex items-center gap-6 p-6 border border-black/5 rounded-[2.5rem] bg-gray-50/50">
-                      <img src={dog.image} className="w-20 h-20 rounded-3xl object-cover shadow-lg" alt="" />
-                      <div>
-                        <h3 className="font-black text-lg uppercase">#{i+1} {dog.name}</h3>
-                        <p className="text-[10px] font-bold opacity-40 uppercase italic leading-tight">"{dog.description}"</p>
+                {loading ? (
+                  <div className="py-10 flex justify-center italic opacity-30 uppercase text-xs font-bold tracking-widest">Calculando seu match ideal...</div>
+                ) : (
+                  <div className="space-y-4 w-full">
+                    {recommendations.slice(0, 3).map((dog, i) => (
+                      <div key={i} className="flex items-center gap-6 p-6 border border-black/5 rounded-[2.5rem] bg-gray-50/50">
+                        <img src={dog.image} className="w-20 h-20 rounded-3xl object-cover shadow-lg" alt="" />
+                        <div>
+                          <h3 className="font-black text-lg uppercase">#{i+1} {dog.name}</h3>
+                          <p className="text-[10px] font-bold opacity-40 uppercase italic leading-tight">"{dog.description}"</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
                 <button onClick={handleReset} className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-all">Reiniciar</button>
               </div>
             )}
@@ -118,7 +129,6 @@ export default function App() {
         </div>
       </main>
 
-      {/* RODAPÉ MINIMALISTA: Texto pequeno à esquerda e ícones vazados [cite: 2026-01-08] */}
       <footer className="h-24 flex items-center px-20 w-full border-t border-black/5">
         <div className="flex-grow">
            <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-black/30">
@@ -126,8 +136,22 @@ export default function App() {
            </p>
         </div>
         <div className="flex gap-6 items-center">
-          <a href="https://www.linkedin.com/in/vinicius-fardin-de-figueiredo-7864a7173/" className="text-black transition-transform active:scale-90"><Linkedin size={20} strokeWidth={2} /></a>
-          <a href="https://www.instagram.com/viniciusfardinf/" className="text-black transition-transform active:scale-90"><Instagram size={20} strokeWidth={2} /></a>
+          <a 
+            href="https://www.linkedin.com/in/vinicius-fardin-de-figueiredo-7864a7173/" 
+            target="_blank" 
+            rel="noreferrer" 
+            className="text-black transition-transform active:scale-90"
+          >
+            <Linkedin size={20} strokeWidth={2} />
+          </a>
+          <a 
+            href="https://www.instagram.com/viniciusfardinf/" 
+            target="_blank" 
+            rel="noreferrer" 
+            className="text-black transition-transform active:scale-90"
+          >
+            <Instagram size={20} strokeWidth={2} />
+          </a>
         </div>
       </footer>
     </div>

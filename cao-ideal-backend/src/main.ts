@@ -40,8 +40,8 @@ async function bootstrap() {
 
   // 5. PORTA DINÂMICA PARA CLOUD (RENDER)
   // A Render exige que usemos process.env.PORT
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
+const port = process.env.PORT || 3000;
+await app.listen(port, '0.0.0.0');
   
   console.log('--------------------------------------------------');
   console.log(`🚀 API ONLINE: http://localhost:${port}/api/v1`);

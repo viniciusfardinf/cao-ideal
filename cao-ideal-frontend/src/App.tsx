@@ -47,7 +47,7 @@ export default function App() {
       setRecommendations(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Erro ao conectar com o backend:", error);
-      setRecommendations([]); // Garante que não quebre se o back estiver off
+      setRecommendations([]); 
     } finally {
       setLoading(false);
     }
@@ -59,13 +59,6 @@ export default function App() {
       <nav className="relative z-50 h-20 flex items-center px-20 w-full justify-between">
         <div className="text-2xl font-black tracking-tighter uppercase italic cursor-pointer" onClick={handleReset}>
           Cão<span className="text-cao-medium font-normal not-italic opacity-30">Ideal</span>
-        </div>
-        
-        {/* PARCERIAS (Solicitadas na memória) */}
-        <div className="flex gap-6 opacity-20 grayscale hover:grayscale-0 transition-all duration-500">
-          <img src="/adobe.png" alt="Adobe" className="h-5" />
-          <img src="/canva.png" alt="Canva" className="h-5" />
-          <img src="/wacom.png" alt="Wacom" className="h-5" />
         </div>
       </nav>
 

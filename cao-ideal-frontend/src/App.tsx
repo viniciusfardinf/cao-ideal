@@ -15,7 +15,6 @@ export default function App() {
     getRandomDogImages().then(setBgImages);
   }, []);
 
-  // Timer do carrossel corrigido para garantir a troca [cite: 2026-01-08]
   useEffect(() => {
     if (bgImages.length === 0) return;
     const timer = setInterval(() => {
@@ -46,6 +45,9 @@ export default function App() {
     try {
       const data = await getDogRecommendations({});
       setRecommendations(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao conectar com o backend:", error);
+      setRecommendations([]); // Garante que não quebre se o back estiver off
     } finally {
       setLoading(false);
     }
@@ -54,9 +56,16 @@ export default function App() {
   return (
     <div className="h-screen flex flex-col bg-white relative overflow-hidden font-sans text-black">
       
-      <nav className="relative z-50 h-20 flex items-center px-20 w-full">
+      <nav className="relative z-50 h-20 flex items-center px-20 w-full justify-between">
         <div className="text-2xl font-black tracking-tighter uppercase italic cursor-pointer" onClick={handleReset}>
           Cão<span className="text-cao-medium font-normal not-italic opacity-30">Ideal</span>
+        </div>
+        
+        {/* PARCERIAS (Solicitadas na memória) */}
+        <div className="flex gap-6 opacity-20 grayscale hover:grayscale-0 transition-all duration-500">
+          <img src="/adobe.png" alt="Adobe" className="h-5" />
+          <img src="/canva.png" alt="Canva" className="h-5" />
+          <img src="/wacom.png" alt="Wacom" className="h-5" />
         </div>
       </nav>
 
@@ -99,13 +108,14 @@ export default function App() {
             {step === 'results' && (
               <div className="w-full space-y-6 animate-in fade-in">
                 <h2 className="text-5xl font-black uppercase italic tracking-tighter">Seu Top 3</h2>
+                
                 {loading ? (
-                  <div className="py-10 flex justify-center italic opacity-30 uppercase text-xs font-bold tracking-widest">Calculando seu match ideal...</div>
-                ) : (
+                  <div className="py-10 flex justify-center italic opacity-30 uppercase text-xs font-bold tracking-widest">Analisando seu perfil...</div>
+                ) : recommendations.length > 0 ? (
                   <div className="space-y-4 w-full">
                     {recommendations.slice(0, 3).map((dog, i) => (
-                      <div key={i} className="flex items-center gap-6 p-6 border border-black/5 rounded-[2.5rem] bg-gray-50/50">
-                        <img src={dog.image} className="w-20 h-20 rounded-3xl object-cover shadow-lg" alt="" />
+                      <div key={i} className="flex items-center gap-6 p-6 border border-black/5 rounded-[2.5rem] bg-gray-50/50 hover:shadow-lg transition-all">
+                        <img src={dog.image} className="w-20 h-20 rounded-3xl object-cover shadow-lg" alt={dog.name} />
                         <div>
                           <h3 className="font-black text-lg uppercase">#{i+1} {dog.name}</h3>
                           <p className="text-[10px] font-bold opacity-40 uppercase italic leading-tight">"{dog.description}"</p>
@@ -113,7 +123,12 @@ export default function App() {
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <div className="p-8 border border-dashed border-black/10 rounded-3xl text-center">
+                    <p className="text-[10px] font-black uppercase opacity-30">Ops! Verifique se o servidor backend está ligado.</p>
+                  </div>
                 )}
+                
                 <button onClick={handleReset} className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-all">Reiniciar</button>
               </div>
             )}
@@ -136,22 +151,8 @@ export default function App() {
            </p>
         </div>
         <div className="flex gap-6 items-center">
-          <a 
-            href="https://www.linkedin.com/in/vinicius-fardin-de-figueiredo-7864a7173/" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="text-black transition-transform active:scale-90"
-          >
-            <Linkedin size={20} strokeWidth={2} />
-          </a>
-          <a 
-            href="https://www.instagram.com/viniciusfardinf/" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="text-black transition-transform active:scale-90"
-          >
-            <Instagram size={20} strokeWidth={2} />
-          </a>
+          <a href="https://www.linkedin.com/in/vinicius-fardin-de-figueiredo-7864a7173/" target="_blank" rel="noreferrer" className="text-black transition-transform active:scale-90"><Linkedin size={20} strokeWidth={2} /></a>
+          <a href="https://www.instagram.com/viniciusfardinf/" target="_blank" rel="noreferrer" className="text-black transition-transform active:scale-90"><Instagram size={20} strokeWidth={2} /></a>
         </div>
       </footer>
     </div>

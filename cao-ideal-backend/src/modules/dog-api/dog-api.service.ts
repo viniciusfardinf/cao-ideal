@@ -5,53 +5,40 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class DogApiService {
-  private readonly apiUrl: string;
-
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) {
-    // Busca a URL da API ou usa a padrão caso não exista no Env
-    this.apiUrl = this.configService.get<string>('DOG_API_URL') || 'https://api.thedogapi.com/v1';
-  }
-
-  // Criamos um método para pegar a chave sempre que precisar, 
-  // garantindo que ela venha da Render ou do .env
-  private getApiKey(): string {
-    const key = this.configService.get<string>('DOG_API_KEY') || process.env.DOG_API_KEY;
-    return key ? key.trim() : '';
-  }
+  ) {}
 
   async fetchAllBreeds() {
-    const apiKey = this.getApiKey();
+    // 1. Tenta pegar a chave de dois lugares diferentes para garantir
+    const rawKey = this.configService.get<string>('DOG_API_KEY') || process.env.DOG_API_KEY;
+    const apiUrl = this.configService.get<string>('DOG_API_URL') || 'https://api.thedogapi.com/v1';
 
-    // LOG DE DEBUG MELHORADO
-    console.log('--- Verificação de Conexão ---');
-    console.log('API URL:', this.apiUrl);
-    console.log('Status da Chave:', apiKey ? 'CHAVE CARREGADA ✅' : 'CHAVE VAZIA ❌');
-    console.log('------------------------------');
+    // 2. Só faz o trim SE a chave existir. Se não, vira string vazia.
+    const apiKey = rawKey ? String(rawKey).trim() : '';
+
+    console.log('--- DEBUG RENDER ---');
+    console.log('Chave encontrada?', apiKey ? 'SIM ✅' : 'NÃO ❌');
+    console.log('URL alvo:', apiUrl);
 
     if (!apiKey) {
       throw new HttpException(
-        'A chave DOG_API_KEY não foi configurada nas variáveis de ambiente.',
+        'A chave DOG_API_KEY não foi encontrada nas variáveis da Render.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
     try {
       const { data } = await firstValueFrom(
-        this.httpService.get(`${this.apiUrl}/breeds`, {
+        this.httpService.get(`${apiUrl}/breeds`, {
           headers: { 'x-api-key': apiKey },
         }),
       );
       return data;
     } catch (error: any) {
       console.error('Erro na TheDogAPI:', error.response?.data || error.message);
-      
-      throw new HttpException(
-        'Falha ao conectar com o provedor de dados de cães.',
-        HttpStatus.BAD_GATEWAY,
-      );
+      throw new HttpException('Erro ao conectar com a API externa', HttpStatus.BAD_GATEWAY);
     }
   }
 }
